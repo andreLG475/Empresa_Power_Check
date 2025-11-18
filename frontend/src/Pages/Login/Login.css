@@ -1,0 +1,161 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+}
+
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+.login-content {
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.logo-text {
+  font-size: 44px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+.logo {
+  width: 150px; 
+  height: auto; 
+  margin-bottom: 20px;
+}
+
+.toggle-buttons {
+  display: flex;
+  border: 1px solid #004bad;
+  border-radius: 5px;
+  overflow: hidden; 
+  margin-bottom: 25px;
+}
+
+.toggle-buttons button {
+  padding: 10px 25px;
+  border: none;
+  background-color: #ffffff;
+  color: #004bad;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+
+.toggle-buttons button:first-child {
+  border-right: 1px solid #004bad;
+}
+
+.toggle-buttons button.active {
+  background-color: #004bad;
+  color: #ffffff;
+}
+
+.toggle-buttons button:not(.active):hover {
+  background-color: #f0f4f8;
+}
+
+
+.login-prompt {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 350px;
+}
+
+form input {
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  color: #000;
+}
+
+form input::placeholder {
+  color: #999;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #004bad;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 74, 145, 0.2);
+}
+
+/* Botão de Login */
+.login-button {
+  padding: 14px;
+  background-color: #004bad;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #003a75; 
+}
+
+.login-footer {
+  background-color: #004bad; 
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+}
+
+.ifc-logo {
+  display: flex;
+  align-items: center;
+}
+
+.ifc-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-right: 12px;
+}
+
+.ifc-logo-grid span {
+  width: 10px;
+  height: 10px;
+}
+
+.ifc-logo-text {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.footer-wrapper {
+  margin-top: auto; 
+  width: 100%;
+}

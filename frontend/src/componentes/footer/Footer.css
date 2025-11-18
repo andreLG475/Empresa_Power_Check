@@ -1,0 +1,13 @@
+.rodape {
+  width: 100%;
+  background-color: #004BAD;
+  color: white;
+  padding: 25px 10px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.rodape-logo {
+  height: 55px;
+  margin-bottom: 10px;
+}

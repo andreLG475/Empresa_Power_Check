@@ -1,0 +1,38 @@
+/* App.css - estilo global da aplicação */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh; /* ocupa toda a altura da tela */
+}
+
+.sidebar {
+  width: 250px; /* largura fixa do sidebar */
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  margin: 10px 0;
+}
+
+.main-content {
+  flex: 1; /* ocupa o restante da tela */
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #2c3e50;
+  color: white;
+}

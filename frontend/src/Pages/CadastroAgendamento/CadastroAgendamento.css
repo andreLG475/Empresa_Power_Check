@@ -1,0 +1,180 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  color: #333;
+  background-color: #ffffff; 
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.agendamento-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.agendamento-content {
+  flex-grow: 1; 
+  width: 90%;
+  max-width: 1000px; 
+  margin: 30px auto; 
+  padding: 20px;
+}
+
+.agendamento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; 
+  margin-bottom: 30px;
+}
+
+.agendamento-header h2 {
+  color: #333;
+  margin: 0;
+  font-size: 2rem; 
+}
+
+.agendamento-logo {
+  width: 160px; 
+  height: auto;
+}
+
+.agendamento-form h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #333; 
+  font-size: 1.4rem;
+  font-weight: 500;
+  border-bottom: 1px solid #eee; 
+  padding-bottom: 8px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  gap: 20px; 
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 15px; 
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #fafafa; 
+  color: #333;
+  width: 100%; 
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #004bad;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 74, 145, 0.2);
+}
+
+.submit-button {
+  display: block;
+  margin: 20px auto 0 auto; 
+  width: fit-content; 
+  padding: 14px 28px; 
+  background-color: #004bad;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; 
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #003a75;
+}
+
+.footer-wrapper {
+  margin-top: auto; 
+  width: 100%;
+}
+
+.maquina-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.maquina-input-row .form-group {
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+.maquina-button {
+  flex-shrink: 0;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+  line-height: 45px;
+  margin-bottom: 2px;
+}
+
+.maquina-button.add {
+  background-color: #004bad; 
+}
+.maquina-button.add:hover {
+  background-color: #003a75;
+}
+
+.maquina-button.remove {
+  background-color: #dc3545; 
+}
+.maquina-button.remove:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .agendamento-content {
+    width: 95%;
+    padding: 10px;
+  }
+  .form-row {
+    grid-template-columns: 1fr !important; 
+  }
+  .agendamento-header {
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px;
+  }
+}

@@ -28,14 +28,7 @@ router.post('/tecnico/register', async (req, res) => {
     }
 });
 
-router.get('/tecnico', async (req, res) => {
-    try {
-        const response = await db('SELECT * FROM tecnicos');
-        res.json(response.rows);
-    } catch (err) {
-        res.json({message: "Ocorreu um erro interno no servidor!", err})
-    }
-});
+
 
 
 router.post('/tecnico/login', async (req, res) => {

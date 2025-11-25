@@ -26,12 +26,6 @@ html {
   padding: 40px 20px;
 }
 
-.logo-text {
-  font-size: 44px;
-  font-weight: bold;
-  line-height: 1.1;
-}
-
 .logo {
   width: 150px; 
   height: auto; 
@@ -79,14 +73,14 @@ html {
 }
 
 
-form {
+.login-form {
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 350px;
 }
 
-form input {
+.login-form input {
   padding: 14px;
   margin-bottom: 15px;
   border: 1px solid #dcdcdc;
@@ -96,11 +90,11 @@ form input {
   color: #000;
 }
 
-form input::placeholder {
+.login-form input::placeholder {
   color: #999;
 }
 
-form input:focus {
+.login-form input:focus {
   outline: none;
   border-color: #004bad;
   background-color: #fff;
@@ -131,28 +125,6 @@ form input:focus {
   padding: 20px 40px;
   display: flex;
   align-items: center;
-}
-
-.ifc-logo {
-  display: flex;
-  align-items: center;
-}
-
-.ifc-logo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  margin-right: 12px;
-}
-
-.ifc-logo-grid span {
-  width: 10px;
-  height: 10px;
-}
-
-.ifc-logo-text {
-  font-size: 14px;
-  line-height: 1.4;
 }
 
 .footer-wrapper {

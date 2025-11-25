@@ -20,7 +20,7 @@ res.status(403).send('Token inválido.');
 };
 
 
-module.exports = {verifyToken};
+module.exports = verifyToken;
 
 
     

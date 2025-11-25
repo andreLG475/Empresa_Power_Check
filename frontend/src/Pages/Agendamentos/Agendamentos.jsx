@@ -2,28 +2,23 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../componentes/sidebar/Sidebar";
 import Footer from "../../componentes/footer/Footer";
 import "./Agendamentos.css";
+import api from '../../api/api';
+import { Link } from "react-router-dom";
 
 const Agendamentos = () => {
 
   const [Agendamentos, setAgendamentos] = useState([]);
 
+    async function atualizarDados() {
+  
+        const response = await api.get("/agendamento");
+        console.log(response.data)
+        setAgendamentos(response.data);
+      };
+
   useEffect(() => {
 
-    setAgendamentos([
-        { id: 1, Clientes: "Tribom Alimentos", Tecnico: "João Silva",Data: "11/09/25",Hora: "13:00" },
-        { id: 2, Clientes: "Mercado Fama", Tecnico: "Maria Souza",Data: "14/11/25",Hora: "10:40" },
-        { id: 3, Clientes: "Pavan", Tecnico:  "Carlos Oliveira",Data: "26/05/26 ",Hora: "07:20" },
-        { id: 4, Clientes: "Raiol Vidros", Tecnico: "André Luiz",Data: "26/03/27",Hora: "14:00" },
-        { id: 5, Clientes: "Tribom Alimentos", Tecnico: "João Silva",Data: "11/09/25",Hora: "13:00" },
-        { id: 6, Clientes: "Mercado Fama", Tecnico: "Maria Souza",Data: "14/11/25",Hora: "10:40" },
-        { id: 7, Clientes: "Pavan", Tecnico:  "Carlos Oliveira",Data: "26/05/26 ",Hora: "07:20" },
-        { id: 8, Clientes: "Raiol Vidros", Tecnico: "André Luiz",Data: "26/03/27",Hora: "14:00" },
-        { id: 9, Clientes: "Tribom Alimentos", Tecnico: "João Silva",Data: "11/09/25",Hora: "13:00" },
-        { id: 10, Clientes: "Mercado Fama", Tecnico: "Maria Souza",Data: "14/11/25",Hora: "10:40" },
-        { id: 11, Clientes: "Pavan", Tecnico:  "Carlos Oliveira",Data: "26/05/26 ",Hora: "07:20" },
-        { id: 12, Clientes: "Raiol Vidros", Tecnico: "André Luiz",Data: "26/03/27",Hora: "14:00" },
-        
-    ]);
+    atualizarDados();
   }, []);
 
   return (
@@ -55,10 +50,10 @@ const Agendamentos = () => {
               {Agendamentos.map((Agendamentos) => (
   <tr key={Agendamentos.id}>
     <td>{Agendamentos.id}</td>
-    <td>{Agendamentos.Clientes}</td>
-    <td>{Agendamentos.Tecnico}</td>
-    <td>{Agendamentos.Data}</td>
-    <td>{Agendamentos.Hora}</td>
+    <td>{Agendamentos.cliente_nome}</td>
+    <td>{Agendamentos.tecnico_nome}</td>
+    <td>{Agendamentos.data}</td>
+    <td>{Agendamentos.hora}</td>
     <td>
       <div className="container-botoes-acao">
         <button className="btn">Editar</button>

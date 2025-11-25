@@ -18,6 +18,12 @@ export default function Sidebar() {
     navigate(caminho);
   };
 
+  const handleLeave = (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    navigate("/")
+  }
+
 
   return (
     <div className="sidebar">
@@ -30,10 +36,11 @@ export default function Sidebar() {
 
       <div className="buttons-top">
         <button className="btn-small">editar perfil</button>
-        <button className="btn-small">Sair do perfil</button>
+        <button className="btn-small" onClick={handleLeave}>Sair do perfil</button>
       </div>
 
       <div className="menu">
+        {user.tipo == 'empresa' && <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/tecnicos");}}>Tecnicos</button>}
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/clientes");}}>Clientes</button>
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Maquinas");}}>Máquinas</button>
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Agendamentos");}}>Agendamentos</button>

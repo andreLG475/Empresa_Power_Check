@@ -5,24 +5,67 @@ import api from '../../api/api';
 import logoPowerCheck from "/src/assets/imagens/logo.png"; 
 
 const initialVistoria = {
-  idMaquina: '',
-  nomeMaquina: '', // Campo para exibir o nome da máquina (simulado)
-  problemas: '',
-  solucao: '',
-  acoesTomadas: ''
+  id_maquina: '',
+  marca_modelo: '',
+  vistoria: '',
+  problemas_encontrados: '',
+  o_que_foi_feito: ''
 };
 
 export default function CadastroRelatorios() {
 
+  const [agendamentos, setAgendamentos] = useState([]);
+  const [maquinasAgendamento, setMaquinasAgendamento] = useState([]);
+  
   const [formData, setFormData] = useState({
-    idAgenda: '',
-    cliente: '',
-    tecnico: ''
+    id_agendamento: ''
   });
   
   const [vistorias, setVistorias] = useState([initialVistoria]);
-  
-  // UseEffects para buscar dados aqui...
+  const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
+
+  useEffect(() => {
+    async function fetchAgendamentos() {
+      try {
+        const response = await api.get('/agendamento');
+        setAgendamentos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error);
+        alert("Não foi possível carregar agendamentos.");
+      }
+    }
+    fetchAgendamentos();
+  }, []);
+
+  useEffect(() => {
+    async function fetchMaquinasAgendamento() {
+      if (!formData.id_agendamento) {
+        setMaquinasAgendamento([]);
+        setAgendamentoSelecionado(null);
+        return;
+      }
+      
+      try {
+        const response = await api.get(`/agendamento/${formData.id_agendamento}`);
+        setAgendamentoSelecionado(response.data);
+        setMaquinasAgendamento(response.data.maquinas || []);
+        
+        // Preencher automaticamente as vistorias com as máquinas do agendamento
+        const novasVistorias = response.data.maquinas.map(maquina => ({
+          id_maquina: maquina.id,
+          marca_modelo: `${maquina.marca} ${maquina.modelo}`,
+          vistoria: '',
+          problemas_encontrados: '',
+          o_que_foi_feito: ''
+        }));
+        setVistorias(novasVistorias);
+      } catch (error) {
+        console.error("Erro ao buscar máquinas do agendamento:", error);
+        alert("Não foi possível carregar as máquinas do agendamento.");
+      }
+    }
+    fetchMaquinasAgendamento();
+  }, [formData.id_agendamento]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,17 +75,12 @@ export default function CadastroRelatorios() {
     }));
   };
 
-  const handleVistoriaChange = (index, name, value) => {
+  const handleVistoriaChange = (index, field, value) => {
     const novasVistorias = [...vistorias];
     novasVistorias[index] = {
-        ...novasVistorias[index],
-        [name]: value
+      ...novasVistorias[index],
+      [field]: value
     };
-    // Simulação: Se o ID da máquina mudar, você faria uma chamada API para buscar o nome aqui.
-    if (name === 'idMaquina') {
-        // Exemplo: Simplesmente define o nome da máquina para demonstração.
-        novasVistorias[index].nomeMaquina = value ? `Máquina #${value}` : '';
-    }
     setVistorias(novasVistorias);
   };
 
@@ -58,21 +96,33 @@ export default function CadastroRelatorios() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     
+    if (!formData.id_agendamento) {
+      alert("Por favor, selecione um agendamento!");
+      return;
+    }
+
+    // Filtrar vistorias vazias
+    const vistoriasValidas = vistorias.filter(v => v.vistoria.trim() !== '');
+
+    if (vistoriasValidas.length === 0) {
+      alert("Por favor, preencha a vistoria de pelo menos uma máquina!");
+      return;
+    }
+
     const dataToSubmit = {
-      ...formData,
-      vistorias: vistorias.filter(v => v.idMaquina.trim() !== '') 
+      id_agendamento: parseInt(formData.id_agendamento),
+      vistorias: vistoriasValidas
     };
 
     try {
-      // Simulação de chamada API
-      // const response = await api.post('/relatorio/adicionar', dataToSubmit);
-      console.log("Dados Enviados:", dataToSubmit);
+      const response = await api.post('/relatorio/adicionar', dataToSubmit);
+      console.log("Resposta do servidor:", response.data);
       alert("Relatório cadastrado com sucesso!");
       window.location.href = '/relatorios'; 
     } catch (error) {
       console.error("Erro ao cadastrar relatório:", error);
       const errorMsg = error.response?.data?.message || "Não foi possível realizar o cadastro.";
-      // alert(`Erro: ${errorMsg}`);
+      alert(`Erro: ${errorMsg}`);
     }
   };
 
@@ -91,16 +141,23 @@ export default function CadastroRelatorios() {
           <div className="form-section">
             <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
               <div className="form-group">
-                <label htmlFor="idAgenda">ID Agenda</label>
-                <input type="text" id="idAgenda" name="idAgenda" required value={formData.idAgenda} onChange={handleChange} />
+                <label htmlFor="id_agendamento">Agendamento</label>
+                <select id="id_agendamento" name="id_agendamento" required value={formData.id_agendamento} onChange={handleChange}>
+                  <option value="" disabled>Selecione um agendamento...</option>
+                  {agendamentos.map(agendamento => (
+                    <option key={agendamento.id} value={agendamento.id}>
+                      #{agendamento.id} - {agendamento.cliente_nome} ({agendamento.data})
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label htmlFor="cliente">Cliente</label>
-                <input type="text" id="cliente" name="cliente" required value={formData.cliente} onChange={handleChange} />
+                <input type="text" id="cliente" name="cliente" disabled value={agendamentoSelecionado?.cliente_nome || ''} />
               </div>
               <div className="form-group">
                 <label htmlFor="tecnico">Técnico</label>
-                <input type="text" id="tecnico" name="tecnico" required value={formData.tecnico} onChange={handleChange} />
+                <input type="text" id="tecnico" name="tecnico" disabled value={agendamentoSelecionado?.tecnico_nome || ''} />
               </div>
             </div>
           </div>
@@ -109,7 +166,7 @@ export default function CadastroRelatorios() {
             <div key={index} className="vistoria-box">
                 
                 <div className="vistoria-title-row">
-                    <h3>Vistoria</h3>
+                    <h3>Vistoria - {vistoria.marca_modelo || 'Máquina'}</h3>
                     {vistorias.length > 1 && (
                         <button 
                             type="button" 
@@ -121,66 +178,62 @@ export default function CadastroRelatorios() {
                     )}
                 </div>
 
-                {/* Linha 1: ID Máquina e Máquina com defeito */}
+                {/* Linha 1: ID Máquina e Marca/Modelo */}
                 <div className="vistoria-row">
                     <div className="form-group">
-                        <label htmlFor={`idMaquina-${index}`}>ID do Máquina</label>
+                        <label htmlFor={`id_maquina-${index}`}>ID da Máquina</label>
                         <input 
                             type="text" 
-                            id={`idMaquina-${index}`} 
-                            name="idMaquina" 
-                            required 
-                            value={vistoria.idMaquina} 
-                            onChange={(e) => handleVistoriaChange(index, e.target.name, e.target.value)}
+                            id={`id_maquina-${index}`} 
+                            name="id_maquina" 
+                            disabled
+                            value={vistoria.id_maquina} 
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor={`nomeCliente-${index}`}>nome do Cliente</label>
+                        <label htmlFor={`marca_modelo-${index}`}>Marca/Modelo</label>
                         <input 
                             type="text" 
-                            id={`nomeCliente-${index}`} 
-                            name="nomeCliente" 
+                            id={`marca_modelo-${index}`} 
+                            name="marca_modelo" 
                             disabled 
-                            value={vistoria.nomeMaquina} 
-                            placeholder="Nome do Cliente (Automático)" 
+                            value={vistoria.marca_modelo} 
                         />
                     </div>
                 </div>
                 
                 {/* Campos de Texto (Textareas) */}
                 <div className="form-group">
-                    <label htmlFor={`problemas-${index}`}>Problemas encontrados:</label>
+                    <label htmlFor={`vistoria-${index}`}>Vistoria:</label>
                     <textarea 
-                        id={`problemas-${index}`} 
-                        name="problemas" 
+                        id={`vistoria-${index}`} 
+                        name="vistoria" 
                         rows="4" 
                         required 
-                        value={vistoria.problemas} 
-                        onChange={(e) => handleVistoriaChange(index, e.target.name, e.target.value)}
+                        value={vistoria.vistoria} 
+                        onChange={(e) => handleVistoriaChange(index, 'vistoria', e.target.value)}
                     ></textarea>
                 </div>
                 
                 <div className="form-group">
-                    <label htmlFor={`solucao-${index}`}>Solução:</label>
+                    <label htmlFor={`problemas_encontrados-${index}`}>Problemas encontrados:</label>
                     <textarea 
-                        id={`solucao-${index}`} 
-                        name="solucao" 
+                        id={`problemas_encontrados-${index}`} 
+                        name="problemas_encontrados" 
                         rows="4" 
-                        required 
-                        value={vistoria.solucao} 
-                        onChange={(e) => handleVistoriaChange(index, e.target.name, e.target.value)}
+                        value={vistoria.problemas_encontrados} 
+                        onChange={(e) => handleVistoriaChange(index, 'problemas_encontrados', e.target.value)}
                     ></textarea>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor={`acoesTomadas-${index}`}>Ações tomadas:</label>
+                    <label htmlFor={`o_que_foi_feito-${index}`}>O que foi feito:</label>
                     <textarea 
-                        id={`acoesTomadas-${index}`} 
-                        name="acoesTomadas" 
+                        id={`o_que_foi_feito-${index}`} 
+                        name="o_que_foi_feito" 
                         rows="4" 
-                        required 
-                        value={vistoria.acoesTomadas} 
-                        onChange={(e) => handleVistoriaChange(index, e.target.name, e.target.value)}
+                        value={vistoria.o_que_foi_feito} 
+                        onChange={(e) => handleVistoriaChange(index, 'o_que_foi_feito', e.target.value)}
                     ></textarea>
                 </div>
             </div>

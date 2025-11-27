@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../componentes/sidebar/Sidebar";
 import Footer from "../../componentes/footer/Footer";
-import "./Clientes.css";
+import "./Tecnicos.css";
 import api from '../../api/api';
 import { Link } from "react-router-dom";
 
-const Clientes = () => {
+const Tecnicos = () => {
 
-  const [clientes, setClientes] = useState([]);
+  const [Tecnicos, setTecnicos] = useState([]);
 
-  async function atualizarDados() {
+    async function atualizarDados() {
   
-    const response = await api.get("/cliente");
-    setClientes(response.data);
-  };
+        const response = await api.get("/tecnico");
+        console.log(response.data)
+        setTecnicos(response.data);
+      };
 
   function excluir(id) {
-    api.delete('cliente/deletar/' + id.target.id);
+    api.delete('Tecnicos/deletar/' + id.target.id);
 
     atualizarDados();
-  }
+  }    
 
   useEffect(() => {
 atualizarDados();
-    
   }, []);
-
-
 
   return (
     <div className="pagina">
@@ -37,41 +35,45 @@ atualizarDados();
         <div className="conteudo-principal-wrapper">
 
 <div className="cabecalho">
-  <h1>Clientes</h1>
+  <h1>Tecnicos</h1>
   
+<Link to="/CadastroTecnico" className="btn btn-cadastrar">Cadastrar novo técnico +</Link>
 
-  <Link to="/CadastroClientes" className="btn btn-cadastrar">Cadastrar novo cliente +</Link>
+
 </div>
           <table className="tabela">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Nome</th>
-                <th>Email</th>
+                <th>CEP</th>
+                <th>Função</th>
                 <th>Telefone</th>
                 <th>Detalhes</th>
               </tr>
             </thead>
 
             <tbody>
-              {clientes.map((cliente) => (
-  <tr key={cliente.id}>
-    <td>{cliente.id}</td>
-    <td>{cliente.nome}</td>
-    <td>{cliente.email}</td>
-    <td>{cliente.telefone}</td>
+              {Tecnicos.map((Tecnicos) => (
+  <tr key={Tecnicos.id}>
+    <td>{Tecnicos.id}</td>
+    <td>{Tecnicos.nome_completo}</td>
+    <td>{Tecnicos.cep}</td>
+    <td>{Tecnicos.funcao}</td>
+    <td>{Tecnicos.telefone}</td>
     <td>
       <div className="container-botoes-acao">
         <button className="btn">Editar</button>
-      <button className="btn delete" onClick={excluir} id={cliente.id}>Excluir</button>
+        <button className="btn delete" onClick={excluir} id={Tecnicos.id}>Excluir</button>
       </div>
     </td>
+
 
   </tr>
               ))}
             </tbody>
           </table>
-        </div> 
+        </div>
         <div className="footer-wrapper">
           <Footer />
         </div>
@@ -81,4 +83,4 @@ atualizarDados();
   );
 };
 
-export default Clientes;
+export default Tecnicos;

@@ -1,0 +1,41 @@
+
+.pagina {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.conteudo-principal {
+  margin-left: 250px;
+  background: white;
+  width: calc(100% - 250px);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.logoInicial {
+    align-items: center;
+    width: 1500px;
+    margin: 100px;
+}
+
+
+.conteudo-principal-wrapper {
+  flex-grow: 1; 
+  overflow-y: auto; 
+  padding: 20px; 
+}
+
+.footer-wrapper {
+  margin-top: auto; 
+  width: 100%;
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+

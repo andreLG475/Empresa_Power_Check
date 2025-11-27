@@ -53,6 +53,13 @@ CREATE TABLE agendamentos (
     id_tecnico INT NOT NULL REFERENCES tecnicos(id) ON DELETE CASCADE
 );
 
+CREATE TABLE agendamento_maquina (
+    id SERIAL PRIMARY KEY,
+    id_agendamento INT NOT NULL REFERENCES agendamentos(id) ON DELETE CASCADE,
+    id_maquina INT NOT NULL REFERENCES maquinas(id) ON DELETE CASCADE,
+    UNIQUE(id_agendamento, id_maquina)
+);
+
 CREATE TABLE relatorio_agendamento (
     id SERIAL PRIMARY KEY,
     id_agendamento INT NOT NULL REFERENCES agendamentos(id) ON DELETE CASCADE,

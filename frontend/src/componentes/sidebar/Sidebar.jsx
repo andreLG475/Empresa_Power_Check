@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 export default function Sidebar() {
     const navigate = useNavigate();
   
-  // TESTE 1: Verifique o que é a função navigate
   console.log("Função navigate:", navigate); 
 
   const user = {
@@ -13,7 +12,6 @@ export default function Sidebar() {
   };
 
     const handleNavegar = (caminho) => {
-    // TESTE 2: Verifique se esta função é chamada
     console.log("NAVEGANDO PARA:", caminho); 
     navigate(caminho);
   };
@@ -21,9 +19,8 @@ export default function Sidebar() {
   const handleLeave = (e) => {
     e.preventDefault();
     localStorage.clear();
-    navigate("/")
+    navigate("/Login")
   }
-
 
   return (
     <div className="sidebar">
@@ -40,11 +37,11 @@ export default function Sidebar() {
       </div>
 
       <div className="menu">
-        {user.tipo == 'empresa' && <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/tecnicos");}}>Tecnicos</button>}
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/clientes");}}>Clientes</button>
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Maquinas");}}>Máquinas</button>
         <button className="btn" onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Agendamentos");}}>Agendamentos</button>
         <button className="btn"onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Relatorios");}}>Relatórios</button>
+        <button className="btn"onClick={() => {console.log("CLIQUE no botão"); handleNavegar("/Tecnicos");}}>Têcnicos</button>
       </div>
     </div>
   );

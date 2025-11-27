@@ -7,7 +7,7 @@ import logoPowerCheck from "/src/assets/imagens/logo.png";
 export default function CadastroTecnico() {
 
   const [formData, setFormData] = useState({
-    nomeCompleto: '',
+    nome_completo: '',
     cpf: '',
     funcao: '',
     senha: '',
@@ -19,7 +19,7 @@ export default function CadastroTecnico() {
     cidade: '',
     bairro: '',
     rua: '',
-    numero: '',
+    numero_estabelecimento: '',
     complemento: ''
   });
 
@@ -40,7 +40,7 @@ export default function CadastroTecnico() {
     // eslint-disable-next-line no-unused-vars
     const { confirmeSenha, ...dataToSubmit } = formData;
     try {
-      const response = await api.post('/tecnico/adicionar', dataToSubmit);
+      const response = await api.post('/auth/tecnico/register', dataToSubmit);
       console.log("Resposta do servidor:", response.data);
       alert("Técnico cadastrado com sucesso!");
       window.location.href = '/login'; 
@@ -67,8 +67,8 @@ export default function CadastroTecnico() {
             {/* Linha 1: Nome e CPF */}
             <div className="form-row" style={{ gridTemplateColumns: '2fr 1fr' }}>
               <div className="form-group">
-                <label htmlFor="nomeCompleto">Nome completo</label>
-                <input type="text" id="nomeCompleto" name="nomeCompleto" required value={formData.nomeCompleto} onChange={handleChange} />
+                <label htmlFor="nome_completo">Nome completo</label>
+                <input type="text" id="nome_completo" name="nome_completo" required value={formData.nome_completo} onChange={handleChange} />
               </div>
               <div className="form-group">
                 <label htmlFor="cpf">CPF</label>
@@ -141,8 +141,8 @@ export default function CadastroTecnico() {
                 <input type="text" id="rua" name="rua" required value={formData.rua} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label htmlFor="numero">Número do estabelecimento</label>
-                <input type="text" id="numero" name="numero" required value={formData.numero} onChange={handleChange} />
+                <label htmlFor="numero_estabelecimento">Número do estabelecimento</label>
+                <input type="text" id="numero_estabelecimento" name="numero_estabelecimento" required value={formData.numero_estabelecimento} onChange={handleChange} />
               </div>
             </div>
             {/* Linha 6: Complemento */}

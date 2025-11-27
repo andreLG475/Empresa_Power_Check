@@ -16,10 +16,20 @@ const Agendamentos = () => {
         setAgendamentos(response.data);
       };
 
+  function excluir(id) {
+    api.delete('agendamento/deletar/' + id.target.id);
+
+    atualizarDados();
+  }    
+
   useEffect(() => {
 
     atualizarDados();
   }, []);
+
+  const handleNovoCadastro = () => {
+    window.location.href='/cadastroAgendamento'
+  }
 
   return (
     <div className="pagina">
@@ -32,7 +42,7 @@ const Agendamentos = () => {
 <div className="cabecalho">
   <h1>Agendamentos</h1>
   
-  <button className="btn btn-cadastrar">Cadastrar novo Agendamento +</button>
+  <button className="btn btn-cadastrar" onClick={handleNovoCadastro}>Cadastrar novo Agendamento +</button>
 </div>
           <table className="tabela">
             <thead>
@@ -52,12 +62,12 @@ const Agendamentos = () => {
     <td>{Agendamentos.id}</td>
     <td>{Agendamentos.cliente_nome}</td>
     <td>{Agendamentos.tecnico_nome}</td>
-    <td>{Agendamentos.data}</td>
+    <td>{Agendamentos.data.replaceAll('-', '/').split('T')[0]}</td>
     <td>{Agendamentos.hora}</td>
     <td>
       <div className="container-botoes-acao">
         <button className="btn">Editar</button>
-        <button className="btn delete">Excluir</button>
+        <button className="btn delete" onClick={excluir} id={Agendamentos.id}>Excluir</button>
       </div>
     </td>
 

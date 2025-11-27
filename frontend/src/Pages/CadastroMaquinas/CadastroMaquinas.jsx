@@ -8,8 +8,8 @@ export default function CadastroMaquinas() {
 
   const [clientes, setClientes] = useState([]);
   const [formData, setFormData] = useState({
-    cliente_id: '',
-    idade: '',
+    id_cliente: '',
+    idade_maquina: '',
     status: '',
     marca: '',
     modelo: '',
@@ -45,7 +45,7 @@ export default function CadastroMaquinas() {
       const response = await api.post('/maquina/adicionar', formData);
       console.log("Resposta do servidor:", response.data);
       alert("Máquina cadastrada com sucesso!");
-      window.location.href = '/clientes'; // Ou para a página de máquinas
+      window.location.href = '/Maquinas';
     } catch (error) {
       console.error("Erro ao cadastrar máquina:", error);
       const errorMsg = error.response?.data?.message || "Não foi possível realizar o cadastro.";
@@ -68,8 +68,8 @@ export default function CadastroMaquinas() {
           <div className="form-section">
             <div className="form-row" style={{ gridTemplateColumns: '1.5fr 1fr 1fr' }}>
               <div className="form-group">
-                <label htmlFor="clienteId">Selecione cliente</label>
-                <select id="clienteId" name="clienteId" required value={formData.clienteId} onChange={handleChange}>
+                <label htmlFor="id_cliente">Selecione cliente</label>
+                <select id="id_cliente" name="id_cliente" required value={formData.id_cliente} onChange={handleChange}>
                   <option value="" disabled>Selecione...</option>
                   {clientes.map(cliente => (
                     <option key={cliente.id} value={cliente.id}>
@@ -79,8 +79,8 @@ export default function CadastroMaquinas() {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="idade">Idade da máquina</label>
-                <input type="text" id="idade" name="idade" required value={formData.idade} onChange={handleChange} />
+                <label htmlFor="idade_maquina">Idade da máquina</label>
+                <input type="text" id="idade_maquina" name="idade_maquina" required value={formData.idade_maquina} onChange={handleChange} />
               </div>
               <div className="form-group">
                 <label htmlFor="status">Status</label>

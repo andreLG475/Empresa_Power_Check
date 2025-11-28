@@ -26,7 +26,7 @@ function App() {
       <Route path="/Maquinas" element={<PaginaPrivada><Maquinas /></PaginaPrivada>} />
       <Route path="/Agendamentos" element={<PaginaPrivada><Agendamentos /></PaginaPrivada>} />
       <Route path="/Relatorios" element={<PaginaPrivada><Relatorios /></PaginaPrivada>} />
-      <Route path="/CadastroTecnico" element={<PaginaPrivada><CadastroTecnico /></PaginaPrivada>} />
+      <Route path="/CadastroTecnico" element={<CadastroTecnico />} />
       <Route path="/CadastroClientes" element={<PaginaPrivada><CadastroClientes /></PaginaPrivada>} />
       <Route path="/CadastroMaquinas" element={<PaginaPrivada><CadastroMaquinas /></PaginaPrivada>} />
       <Route path="/CadastroAgendamento" element={<PaginaPrivada><CadastroAgendamento /></PaginaPrivada>} />

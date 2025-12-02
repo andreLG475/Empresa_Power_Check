@@ -20,6 +20,11 @@ const Agendamentos = () => {
     api.delete('agendamento/deletar/' + id.target.id);
 
     atualizarDados();
+  }
+
+  function editar(id) {
+    localStorage.setItem('id', id.target.id);
+    window.location.href = '/EditarAgendamento';
   }    
 
   useEffect(() => {
@@ -66,7 +71,7 @@ const Agendamentos = () => {
     <td>{Agendamentos.hora}</td>
     <td>
       <div className="container-botoes-acao">
-        <button className="btn">Editar</button>
+        <button className="btn" onClick={editar} id={Agendamentos.id}>Editar</button>
         <button className="btn delete" onClick={excluir} id={Agendamentos.id}>Excluir</button>
       </div>
     </td>

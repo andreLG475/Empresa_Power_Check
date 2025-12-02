@@ -26,6 +26,12 @@ const Tecnicos = () => {
 atualizarDados();
   }, []);
 
+  function editar(id) {
+    localStorage.setItem('id', id.target.id);
+
+    window.location.href = '/EditarTecnico';
+  }
+
   return (
     <div className="pagina">
       <Sidebar />
@@ -63,7 +69,7 @@ atualizarDados();
     <td>{Tecnicos.telefone}</td>
     <td>
       <div className="container-botoes-acao">
-        <button className="btn">Editar</button>
+        <button className="btn" onClick={editar} id={Tecnicos.id}>Editar</button>
         <button className="btn delete" onClick={excluir} id={Tecnicos.id}>Excluir</button>
       </div>
     </td>

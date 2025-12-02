@@ -21,6 +21,11 @@ const Clientes = () => {
     atualizarDados();
   }
 
+  function editar(id) {
+    localStorage.setItem('id', id.target.id);
+    window.location.href = '/EditarCliente';
+  }
+
   useEffect(() => {
 atualizarDados();
     
@@ -62,7 +67,7 @@ atualizarDados();
     <td>{cliente.telefone}</td>
     <td>
       <div className="container-botoes-acao">
-        <button className="btn">Editar</button>
+        <button className="btn" onClick={editar} id={cliente.id}>Editar</button>
       <button className="btn delete" onClick={excluir} id={cliente.id}>Excluir</button>
       </div>
     </td>

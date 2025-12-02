@@ -14,10 +14,22 @@ const Relatorios = () => {
         const response = await api.get("/relatorio");
         setRelatorios(response.data);
       };
-  function excluir(id) {
-    api.delete('relatorio/deletar/' + id.target.id);
+  async function excluir(id) {
+    
+    try {
+      await api.delete('relatorio/deletar/' + id.target.id);
+      alert('Relatório excluído com sucesso!');
+      atualizarDados();
+    } catch (error) {
+      console.error("Erro ao excluir relatório:", error);
+      const errorMsg = error.response?.data?.message || "Não foi possível excluir o relatório.";
+      alert(`Erro: ${errorMsg}`);
+    }
+  }
 
-    atualizarDados();
+  function editar(id) {
+    localStorage.setItem('id', id.target.id);
+    window.location.href = '/EditarRelatorio';
   }
 
   useEffect(() => {
@@ -61,8 +73,8 @@ const Relatorios = () => {
     <td>{Relatorios.hora_agendamento}</td>
     <td>
       <div className="container-botoes-acao">
-        <button className="btn">Editar</button>
-        <button className="btn delete">Excluir</button>
+        <button className="btn" onClick={editar} id={Relatorios.relatorio_id}>Editar</button>
+        <button className="btn delete" onClick={excluir} id={Relatorios.relatorio_id}>Excluir</button>
       </div>
     </td>
 

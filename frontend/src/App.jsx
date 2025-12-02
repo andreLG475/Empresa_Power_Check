@@ -13,6 +13,11 @@ import CadastroAgendamento from "./Pages/CadastroAgendamento/CadastroAgendamento
 import CadastroRelatorios from "./Pages/CadastroRelatorios/CadastroRelatorios";
 import Inicial from "./Pages/Inicial/Inicial";
 import PaginaPrivada from "./componentes/PaginaPrivada.jsx";
+import EditarTecnico from "./Pages/EditarTecnico/EditarTecnico";
+import EditarCliente from "./Pages/EditarCliente/EditarCliente";
+import EditarMaquina from "./Pages/EditarMaquina/EditarMaquina";
+import EditarAgendamento from "./Pages/EditarAgendamento/EditarAgendamento";
+import EditarRelatorio from "./Pages/EditarRelatorio/EditarRelatorio";
 
 
 
@@ -31,6 +36,11 @@ function App() {
       <Route path="/CadastroMaquinas" element={<PaginaPrivada><CadastroMaquinas /></PaginaPrivada>} />
       <Route path="/CadastroAgendamento" element={<PaginaPrivada><CadastroAgendamento /></PaginaPrivada>} />
       <Route path="/CadastroRelatorios" element={<PaginaPrivada><CadastroRelatorios /></PaginaPrivada>} />
+      <Route path="/EditarTecnico" element={<PaginaPrivada><EditarTecnico /></PaginaPrivada>} />
+      <Route path="/EditarCliente" element={<PaginaPrivada><EditarCliente /></PaginaPrivada>} />
+      <Route path="/EditarMaquina" element={<PaginaPrivada><EditarMaquina /></PaginaPrivada>} />
+      <Route path="/EditarAgendamento" element={<PaginaPrivada><EditarAgendamento /></PaginaPrivada>} />
+      <Route path="/EditarRelatorio" element={<PaginaPrivada><EditarRelatorio /></PaginaPrivada>} />
     </Routes>
   );
 }

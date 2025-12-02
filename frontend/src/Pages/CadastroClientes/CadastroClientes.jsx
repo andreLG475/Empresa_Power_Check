@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Footer from "../../componentes/footer/Footer"; 
 import './CadastroClientes.css'; 
 import api from '../../api/api';
-import logoPowerCheck from "/src/assets/imagens/logo.png"; 
+import logoPowerCheck from "/src/assets/imagens/logo.png";
+import { formatCNPJ, formatTelefone, formatCEP, unformatValue } from '../../utils/formatters'; 
 
 export default function CadastroCliente() {
 
@@ -23,16 +24,34 @@ export default function CadastroCliente() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+
+    // Aplicar formatações específicas
+    if (name === 'cnpj') {
+      formattedValue = formatCNPJ(value);
+    } else if (name === 'telefone') {
+      formattedValue = formatTelefone(value);
+    } else if (name === 'cep') {
+      formattedValue = formatCEP(value);
+    }
+
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: formattedValue
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.post('/cliente/adicionar', formData);
+      // Remover formatação antes de enviar ao servidor
+      const dataToSubmit = {
+        ...formData,
+        cnpj: unformatValue(formData.cnpj),
+        telefone: unformatValue(formData.telefone),
+        cep: unformatValue(formData.cep)
+      };
+      const response = await api.post('/cliente/adicionar', dataToSubmit);
       console.log("Resposta do servidor:", response.data);
       alert("Cliente cadastrado com sucesso!");
       window.location.href = '/clientes'; 
@@ -63,7 +82,7 @@ export default function CadastroCliente() {
               </div>
               <div className="form-group">
                 <label htmlFor="cnpj">CNPJ</label>
-                <input type="text" id="cnpj" name="cnpj" required minLength={14} maxLength={14} value={formData.cnpj} onChange={handleChange} />
+                <input type="text" id="cnpj" name="cnpj" required maxLength={18} value={formData.cnpj} onChange={handleChange} />
               </div>
             </div>
             
@@ -80,7 +99,7 @@ export default function CadastroCliente() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 2fr' }}>
               <div className="form-group">
                 <label htmlFor="telefone">Telefone</label>
-                <input type="tel" id="telefone" name="telefone" required value={formData.telefone} onChange={handleChange} />
+                <input type="tel" id="telefone" name="telefone" required maxLength={14} value={formData.telefone} onChange={handleChange} placeholder="(xx) xxxxx-xxxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -94,7 +113,7 @@ export default function CadastroCliente() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
               <div className="form-group">
                 <label htmlFor="cep">CEP</label>
-                <input type="text" id="cep" name="cep" required value={formData.cep} onChange={handleChange} />
+                <input type="text" id="cep" name="cep" required maxLength={9} value={formData.cep} onChange={handleChange} placeholder="xxxxx-xxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>

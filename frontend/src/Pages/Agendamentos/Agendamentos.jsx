@@ -4,6 +4,7 @@ import Footer from "../../componentes/footer/Footer";
 import "./Agendamentos.css";
 import api from '../../api/api';
 import { Link } from "react-router-dom";
+import { formatData } from '../../utils/formatters';
 
 const Agendamentos = () => {
 
@@ -67,7 +68,7 @@ const Agendamentos = () => {
     <td>{Agendamentos.id}</td>
     <td>{Agendamentos.cliente_nome}</td>
     <td>{Agendamentos.tecnico_nome}</td>
-    <td>{Agendamentos.data.replaceAll('-', '/').split('T')[0]}</td>
+    <td>{formatData(Agendamentos.data)}</td>
     <td>{Agendamentos.hora}</td>
     <td>
       <div className="container-botoes-acao">

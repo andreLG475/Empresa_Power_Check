@@ -4,6 +4,7 @@ import Footer from "../../componentes/footer/Footer";
 import "./Relatorios.css";
 import api from "../../api/api";
 import { Link } from "react-router-dom";
+import { formatData } from '../../utils/formatters';
 
 const Relatorios = () => {
 
@@ -69,7 +70,7 @@ const Relatorios = () => {
     <td>{Relatorios.agendamento_id}</td>
     <td>{Relatorios.cliente_nome}</td> 
     <td>{Relatorios.tecnico_nome}</td>
-    <td>{Relatorios.data_agendamento}</td>
+    <td>{formatData(Relatorios.data_agendamento)}</td>
     <td>{Relatorios.hora_agendamento}</td>
     <td>
       <div className="container-botoes-acao">

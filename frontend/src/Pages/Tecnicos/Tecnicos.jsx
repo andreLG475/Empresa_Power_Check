@@ -4,6 +4,7 @@ import Footer from "../../componentes/footer/Footer";
 import "./Tecnicos.css";
 import api from '../../api/api';
 import { Link } from "react-router-dom";
+import { formatCEP, formatTelefone } from '../../utils/formatters.js';
 
 const Tecnicos = () => {
 
@@ -64,9 +65,9 @@ atualizarDados();
   <tr key={Tecnicos.id}>
     <td>{Tecnicos.id}</td>
     <td>{Tecnicos.nome_completo}</td>
-    <td>{Tecnicos.cep}</td>
+    <td>{formatCEP(Tecnicos.cep)}</td>
     <td>{Tecnicos.funcao}</td>
-    <td>{Tecnicos.telefone}</td>
+    <td>{formatTelefone(Tecnicos.telefone)}</td>
     <td>
       <div className="container-botoes-acao">
         <button className="btn" onClick={editar} id={Tecnicos.id}>Editar</button>

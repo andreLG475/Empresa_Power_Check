@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Footer from "../../componentes/footer/Footer"; 
 import './EditarTecnico.css'; 
 import api from '../../api/api';
-import logoPowerCheck from "/src/assets/imagens/logo.png"; 
+import logoPowerCheck from "/src/assets/imagens/logo.png";
+import { formatCPF, formatTelefone, formatCEP, unformatValue } from '../../utils/formatters'; 
 
 export default function CadastroTecnico() {
 
@@ -25,9 +26,20 @@ export default function CadastroTecnico() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+
+    // Aplicar formatações específicas
+    if (name === 'cpf') {
+      formattedValue = formatCPF(value);
+    } else if (name === 'telefone') {
+      formattedValue = formatTelefone(value);
+    } else if (name === 'cep') {
+      formattedValue = formatCEP(value);
+    }
+
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: formattedValue
     }));
   };
 
@@ -38,7 +50,12 @@ export default function CadastroTecnico() {
 
         if (!id) window.location.href= "/Tecnicos"
         const tecnicos = await api.get(`/tecnico/${id}`);
-        setFormData(tecnicos.data);
+        setFormData({
+          ...tecnicos.data,
+          cpf: formatCPF(tecnicos.data.cpf),
+          telefone: formatTelefone(tecnicos.data.telefone),
+          cep: formatCEP(tecnicos.data.cep)
+        });
         localStorage.removeItem('id');
       } catch (error) {
         console.error("Erro ao buscar técnico:", error);
@@ -52,7 +69,12 @@ export default function CadastroTecnico() {
     event.preventDefault();
 
     // eslint-disable-next-line no-unused-vars
-    const { ...dataToSubmit } = formData;
+    const dataToSubmit = {
+      ...formData,
+      cpf: unformatValue(formData.cpf),
+      telefone: unformatValue(formData.telefone),
+      cep: unformatValue(formData.cep)
+    };
     try {
       const response = await api.put('/tecnico/atualizar', dataToSubmit);
       console.log("Resposta do servidor:", response.data);
@@ -86,7 +108,7 @@ export default function CadastroTecnico() {
               </div>
               <div className="form-group">
                 <label htmlFor="cpf">CPF</label>
-                <input type="text" id="cpf" name="cpf" required value={formData.cpf} minLength={11} maxLength={11} onChange={handleChange} />
+                <input type="text" id="cpf" name="cpf" required maxLength={14} value={formData.cpf} onChange={handleChange} placeholder="xxx.xxx.xxx-xx" />
               </div>
             </div>
             
@@ -114,7 +136,7 @@ export default function CadastroTecnico() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 2fr' }}>
               <div className="form-group">
                 <label htmlFor="telefone">Telefone</label>
-                <input type="tel" id="telefone" name="telefone" required value={formData.telefone} onChange={handleChange} />
+                <input type="tel" id="telefone" name="telefone" required maxLength={14} value={formData.telefone} onChange={handleChange} placeholder="(xx) xxxxx-xxxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -129,7 +151,7 @@ export default function CadastroTecnico() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
               <div className="form-group">
                 <label htmlFor="cep">CEP</label>
-                <input type="text" id="cep" name="cep" required value={formData.cep} onChange={handleChange} />
+                <input type="text" id="cep" name="cep" required maxLength={9} value={formData.cep} onChange={handleChange} placeholder="xxxxx-xxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>

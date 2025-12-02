@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Footer from "../../componentes/footer/Footer"; 
 import './EditarCliente.css'; 
 import api from '../../api/api';
-import logoPowerCheck from "/src/assets/imagens/logo.png"; 
+import logoPowerCheck from "/src/assets/imagens/logo.png";
+import { formatCNPJ, formatTelefone, formatCEP, unformatValue } from '../../utils/formatters'; 
 
 export default function EditarCliente() {
 
@@ -34,11 +35,11 @@ export default function EditarCliente() {
         setFormData({
           id: cliente.data.id,
           nome: cliente.data.nome || '',
-          cnpj: cliente.data.cnpj || '',
+          cnpj: formatCNPJ(cliente.data.cnpj) || '',
           id_tecnico_responsavel: cliente.data.id_tecnico_responsavel || '',
-          telefone: cliente.data.telefone || '',
+          telefone: formatTelefone(cliente.data.telefone) || '',
           email: cliente.data.email || '',
-          cep: cliente.data.cep || '',
+          cep: formatCEP(cliente.data.cep) || '',
           estado: cliente.data.estado || '',
           cidade: cliente.data.cidade || '',
           bairro: cliente.data.bairro || '',
@@ -62,16 +63,34 @@ export default function EditarCliente() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+
+    // Aplicar formatações específicas
+    if (name === 'cnpj') {
+      formattedValue = formatCNPJ(value);
+    } else if (name === 'telefone') {
+      formattedValue = formatTelefone(value);
+    } else if (name === 'cep') {
+      formattedValue = formatCEP(value);
+    }
+
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: formattedValue
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.put(`/cliente/editar/${formData.id}`, formData);
+      // Remover formatação antes de enviar ao servidor
+      const dataToSubmit = {
+        ...formData,
+        cnpj: unformatValue(formData.cnpj),
+        telefone: unformatValue(formData.telefone),
+        cep: unformatValue(formData.cep)
+      };
+      const response = await api.put(`/cliente/editar/${formData.id}`, dataToSubmit);
       console.log("Resposta do servidor:", response.data);
       alert("Cliente atualizado com sucesso!");
       window.location.href = '/clientes'; 
@@ -102,7 +121,7 @@ export default function EditarCliente() {
               </div>
               <div className="form-group">
                 <label htmlFor="cnpj">CNPJ</label>
-                <input type="text" id="cnpj" name="cnpj" required minLength={14} maxLength={14} value={formData.cnpj} onChange={handleChange} />
+                <input type="text" id="cnpj" name="cnpj" required maxLength={18} value={formData.cnpj} onChange={handleChange} />
               </div>
             </div>
             
@@ -126,7 +145,7 @@ export default function EditarCliente() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 2fr' }}>
               <div className="form-group">
                 <label htmlFor="telefone">Telefone</label>
-                <input type="tel" id="telefone" name="telefone" required value={formData.telefone} onChange={handleChange} />
+                <input type="tel" id="telefone" name="telefone" required maxLength={14} value={formData.telefone} onChange={handleChange} placeholder="(xx) xxxxx-xxxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -140,7 +159,7 @@ export default function EditarCliente() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
               <div className="form-group">
                 <label htmlFor="cep">CEP</label>
-                <input type="text" id="cep" name="cep" required value={formData.cep} onChange={handleChange} />
+                <input type="text" id="cep" name="cep" required maxLength={9} value={formData.cep} onChange={handleChange} placeholder="xxxxx-xxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>

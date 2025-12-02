@@ -4,6 +4,7 @@ import Footer from "../../componentes/footer/Footer";
 import "./Clientes.css";
 import api from '../../api/api';
 import { Link } from "react-router-dom";
+import { formatCNPJ, formatTelefone } from '../../utils/formatters';
 
 const Clientes = () => {
 
@@ -64,7 +65,7 @@ atualizarDados();
     <td>{cliente.id}</td>
     <td>{cliente.nome}</td>
     <td>{cliente.email}</td>
-    <td>{cliente.telefone}</td>
+    <td>{formatTelefone(cliente.telefone)}</td>
     <td>
       <div className="container-botoes-acao">
         <button className="btn" onClick={editar} id={cliente.id}>Editar</button>

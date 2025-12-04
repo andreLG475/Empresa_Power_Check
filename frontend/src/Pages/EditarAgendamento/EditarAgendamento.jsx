@@ -8,6 +8,7 @@ export default function EditarAgendamento() {
 
   const [clientes, setClientes] = useState([]);
   const [tecnicos, setTecnicos] = useState([]);
+  const [todasAsMaquinas, setTodasAsMaquinas] = useState([]);
   const [maquinas, setMaquinas] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -69,7 +70,12 @@ export default function EditarAgendamento() {
 
         setClientes(clientesRes.data);
         setTecnicos(tecnicosRes.data);
-        setMaquinas(maquinasRes.data);
+        setTodasAsMaquinas(maquinasRes.data);
+        
+        // Filtrar máquinas do cliente selecionado
+        const idClienteSelecionado = agendamento.data.id_cliente;
+        const maquinasDoCliente = maquinasRes.data.filter(maq => maq.id_cliente === idClienteSelecionado);
+        setMaquinas(maquinasDoCliente);
         
         localStorage.removeItem('id');
       } catch (error) {
@@ -86,6 +92,14 @@ export default function EditarAgendamento() {
       ...prevState,
       [name]: value
     }));
+
+    // Filtrar máquinas quando cliente for alterado
+    if (name === 'id_cliente') {
+      const maquinasDoCliente = todasAsMaquinas.filter(maq => maq.id_cliente === parseInt(value));
+      setMaquinas(maquinasDoCliente);
+      // Limpar máquinas selecionadas quando cliente mudar
+      setMaquinasSelecionadas(['']);
+    }
   };
 
   const handleMaquinaChange = (index, value) => {
@@ -116,16 +130,14 @@ export default function EditarAgendamento() {
     }
 
     try {
-      // Primeiro atualizar o agendamento básico
+      // Atualizar o agendamento com dados básicos E máquinas
       await api.put(`/agendamento/editar/${formData.id}`, {
         data: formData.data,
         hora: formData.hora,
         id_cliente: parseInt(formData.id_cliente),
-        id_tecnico: parseInt(formData.id_tecnico)
+        id_tecnico: parseInt(formData.id_tecnico),
+        maquinas: maquinasValidas
       });
-
-      // Nota: A atualização das máquinas do agendamento pode precisar de uma rota específica
-      // Por enquanto, apenas atualizamos os dados básicos
       
       alert("Agendamento atualizado com sucesso!");
       window.location.href = '/Agendamentos';

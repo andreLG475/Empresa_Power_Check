@@ -7,12 +7,11 @@ import { formatCNPJ, formatTelefone, formatCEP, unformatValue } from '../../util
 
 export default function EditarCliente() {
 
-  const [tecnicos, setTecnicos] = useState([]);
   const [formData, setFormData] = useState({
     id: '',
     nome: '',
     cnpj: '',
-    id_tecnico_responsavel: '',
+    responsavel: '',
     telefone: '',
     email: '',
     cep: '',
@@ -36,7 +35,7 @@ export default function EditarCliente() {
           id: cliente.data.id,
           nome: cliente.data.nome || '',
           cnpj: formatCNPJ(cliente.data.cnpj) || '',
-          id_tecnico_responsavel: cliente.data.id_tecnico_responsavel || '',
+          responsavel: cliente.data.responsavel || '',
           telefone: formatTelefone(cliente.data.telefone) || '',
           email: cliente.data.email || '',
           cep: formatCEP(cliente.data.cep) || '',
@@ -47,10 +46,6 @@ export default function EditarCliente() {
           numero_estabelecimento: cliente.data.numero_estabelecimento || '',
           complemento: cliente.data.complemento || ''
         });
-        
-        // Buscar lista de técnicos
-        const tecnicosRes = await api.get('/tecnico');
-        setTecnicos(tecnicosRes.data);
         
         localStorage.removeItem('id');
       } catch (error) {
@@ -127,15 +122,8 @@ export default function EditarCliente() {
             
             <div className="form-row" style={{ gridTemplateColumns: '1fr' }}>
               <div className="form-group">
-                <label htmlFor="id_tecnico_responsavel">Técnico Responsável</label>
-                <select id="id_tecnico_responsavel" name="id_tecnico_responsavel" value={formData.id_tecnico_responsavel || ''} onChange={handleChange}>
-                  <option value="">Selecione um técnico...</option>
-                  {tecnicos.map(tecnico => (
-                    <option key={tecnico.id} value={tecnico.id}>
-                      {tecnico.nome_completo}
-                    </option>
-                  ))}
-                </select>
+                <label htmlFor="responsavel">Responsável</label>
+                <input type="text" id="responsavel" name="responsavel" value={formData.responsavel} onChange={handleChange} />
               </div>
             </div>
           </div>
@@ -163,7 +151,36 @@ export default function EditarCliente() {
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>
-                <input type="text" id="estado" name="estado" required value={formData.estado} onChange={handleChange} />
+                <select id="estado" name="estado" required value={formData.estado} onChange={handleChange} >
+                  <option value="" disabled>Selecione...</option>
+                  <option value="Acre">AC</option>
+                  <option value="Alagoas">AL</option>
+                  <option value="Amapá">	AP</option>
+                  <option value="Amazonas">	AM</option>
+                  <option value="Bahia">BA</option>
+                  <option value="Ceará">CE</option>
+                  <option value="Distrito Federal">DF</option>
+                  <option value="Espírito Santo">ES</option>
+                  <option value="Goiás">GO</option>
+                  <option value="Maranhão">MA</option>
+                  <option value="Mato Grosso">MT</option>
+                  <option value="Mato Grosso do Sul">MS</option>
+                  <option value="Minas Gerais">MG</option>
+                  <option value="Pará">PA</option>
+                  <option value="Paraíba">PB</option>
+                  <option value="Paraná">PR</option>
+                  <option value="Pernambuco">PE</option>
+                  <option value="Piauí">PI</option>
+                  <option value="Rio de Janeiro">RJ</option>
+                  <option value="Rio Grande do Norte">RN</option>
+                  <option value="Rio Grande do Sul">RS</option>
+                  <option value="Rondônia">RO</option>
+                  <option value="Roraima">RR</option>
+                  <option value="Santa Catarina">SC</option>
+                  <option value="São Paulo">SP</option>
+                  <option value="Sergipe">SE</option>
+                  <option value="Tocantins">TO</option>
+                </select>
               </div>
               <div className="form-group">
                 <label htmlFor="cidade">Cidade</label>

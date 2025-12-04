@@ -33,6 +33,7 @@ router.post('/tecnico/register', async (req, res) => {
 
 router.post('/tecnico/login', async (req, res) => {
     const { nome, senha } = req.body;
+    console.log(nome, senha);
     try {
         // 1. Executa a query de SELEÇÃO para buscar o técnico no PostgreSQL
         const result = await db('SELECT * FROM tecnicos WHERE nome_completo = $1', [nome]);
@@ -53,7 +54,7 @@ router.post('/tecnico/login', async (req, res) => {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1y' });
 
         // Retorna o sucesso. Não precisamos do res.json({ token })
-        res.status(200).json({ message: 'Login bem-sucedido.', token });
+        res.status(200).json({ message: 'Login bem-sucedido.', token, nome_completo: user.nome_completo });
         
     } catch (error) {
         res.status(500).json({ message: 'Erro no servidor.', error: error.message });

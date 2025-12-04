@@ -20,7 +20,7 @@ CREATE TABLE tecnicos (
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     cnpj CHAR(14) NOT NULL UNIQUE,
-    id_tecnico_responsavel INT REFERENCES tecnicos(id) ON DELETE SET NULL,
+    responsavel VARCHAR(150),
     nome VARCHAR(150) NOT NULL,
     telefone VARCHAR(15),
     email VARCHAR(100),
@@ -64,8 +64,7 @@ CREATE TABLE relatorio_agendamento (
     id SERIAL PRIMARY KEY,
     id_agendamento INT NOT NULL REFERENCES agendamentos(id) ON DELETE CASCADE,
     data DATE NOT NULL,
-    hora TIME NOT NULL,
-    id_maquina INT NOT NULL REFERENCES maquinas(id) ON DELETE CASCADE
+    hora TIME NOT NULL
 );
 
 CREATE TABLE relatorio_detalhes (
@@ -73,5 +72,6 @@ CREATE TABLE relatorio_detalhes (
     id_relatorio INT NOT NULL REFERENCES relatorio_agendamento(id) ON DELETE CASCADE,
     vistoria TEXT,
     problemas_encontrados TEXT,
-    o_que_foi_feito TEXT
+    o_que_foi_feito TEXT,
+    id_maquina INT NOT NULL REFERENCES maquinas(id) ON DELETE CASCADE
 );

@@ -8,6 +8,7 @@ export default function CadastroAgendamento() {
 
   const [clientes, setClientes] = useState([]);
   const [tecnicos, setTecnicos] = useState([]);
+  const [todasAsMaquinas, setTodasAsMaquinas] = useState([]);
   const [maquinas, setMaquinas] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -30,7 +31,8 @@ export default function CadastroAgendamento() {
 
         setClientes(clientesRes.data);
         setTecnicos(tecnicosRes.data);
-        setMaquinas(maquinasRes.data);
+        setTodasAsMaquinas(maquinasRes.data);
+        setMaquinas([]);
 
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
@@ -47,6 +49,14 @@ export default function CadastroAgendamento() {
       ...prevState,
       [name]: value
     }));
+
+    // Filtrar máquinas quando cliente for alterado
+    if (name === 'id_cliente') {
+      const maquinasDoCliente = todasAsMaquinas.filter(maq => maq.id_cliente === parseInt(value));
+      setMaquinas(maquinasDoCliente);
+      // Limpar máquinas selecionadas quando cliente mudar
+      setMaquinasComDefeito(['']);
+    }
   };
 
   const handleMaquinaChange = (index, value) => {
@@ -199,7 +209,7 @@ export default function CadastroAgendamento() {
 
                     {maquinas.map(maquina => (
                       <option key={maquina.id} value={maquina.id}>
-                        {`ID: ${maquina.id} — ${maquina.nome || maquina.modelo || "Máquina"}`}
+                        {`ID: ${maquina.id} — Função: ${maquina.funcao} - Modelo: ${maquina.modelo}`}
                       </option>
                     ))}
 

@@ -16,6 +16,7 @@ export default function CadastroRelatorios() {
 
   const [agendamentos, setAgendamentos] = useState([]);
   const [maquinasAgendamento, setMaquinasAgendamento] = useState([]);
+  const [todasAsMaquinas, setTodasAsMaquinas] = useState([]);
   
   const [formData, setFormData] = useState({
     id_agendamento: ''
@@ -38,6 +39,18 @@ export default function CadastroRelatorios() {
   }, []);
 
   useEffect(() => {
+    async function fetchTodasAsMaquinas() {
+      try {
+        const response = await api.get('/maquina');
+        setTodasAsMaquinas(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar máquinas:", error);
+      }
+    }
+    fetchTodasAsMaquinas();
+  }, []);
+
+  useEffect(() => {
     async function fetchMaquinasAgendamento() {
       if (!formData.id_agendamento) {
         setMaquinasAgendamento([]);
@@ -48,7 +61,12 @@ export default function CadastroRelatorios() {
       try {
         const response = await api.get(`/agendamento/${formData.id_agendamento}`);
         setAgendamentoSelecionado(response.data);
-        setMaquinasAgendamento(response.data.maquinas || []);
+        
+        // Filtrar máquinas apenas do cliente do agendamento
+        const maquinasDoCliente = todasAsMaquinas.filter(
+          maq => maq.id_cliente === response.data.id_cliente
+        );
+        setMaquinasAgendamento(maquinasDoCliente);
         
         // Preencher automaticamente as vistorias com as máquinas do agendamento
         const novasVistorias = response.data.maquinas.map(maquina => ({
@@ -65,7 +83,7 @@ export default function CadastroRelatorios() {
       }
     }
     fetchMaquinasAgendamento();
-  }, [formData.id_agendamento]);
+  }, [formData.id_agendamento, todasAsMaquinas]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,7 +103,7 @@ export default function CadastroRelatorios() {
   };
 
   const handleAddVistoria = () => {
-    setVistorias([...vistorias, initialVistoria]);
+    setVistorias([...vistorias, { ...initialVistoria }]);
   };
 
   const handleRemoveVistoria = (index) => {
@@ -116,7 +134,7 @@ export default function CadastroRelatorios() {
 
     try {
       const response = await api.post('/relatorio/adicionar', dataToSubmit);
-      console.log("Resposta do servidor:", response.data);
+      
       alert("Relatório cadastrado com sucesso!");
       window.location.href = '/relatorios'; 
     } catch (error) {
@@ -125,6 +143,15 @@ export default function CadastroRelatorios() {
       alert(`Erro: ${errorMsg}`);
     }
   };
+
+  function dataHora(data) {
+    // 1223-12-12T03:06:28.000Z
+    let dataNova = data;
+    const [year, month, day] = dataNova.split('T')[0].split('-');
+    const [hour, minute, second] = dataNova.split('T')[1].split(':')
+    dataNova = `${day}/${month}/${year} - ${hour}:${minute}:${second.split('.')[0]}`;
+    return dataNova;
+  }
 
   return (
     <div className="relatorio-container">
@@ -146,7 +173,7 @@ export default function CadastroRelatorios() {
                   <option value="" disabled>Selecione um agendamento...</option>
                   {agendamentos.map(agendamento => (
                     <option key={agendamento.id} value={agendamento.id}>
-                      #{agendamento.id} - {agendamento.cliente_nome} ({agendamento.data})
+                      #{agendamento.id} - {agendamento.cliente_nome} ({dataHora(agendamento.data)})
                     </option>
                   ))}
                 </select>
@@ -181,14 +208,27 @@ export default function CadastroRelatorios() {
                 {/* Linha 1: ID Máquina e Marca/Modelo */}
                 <div className="vistoria-row">
                     <div className="form-group">
-                        <label htmlFor={`id_maquina-${index}`}>ID da Máquina</label>
-                        <input 
-                            type="text" 
-                            id={`id_maquina-${index}`} 
-                            name="id_maquina" 
-                            disabled
-                            value={vistoria.id_maquina} 
-                        />
+                        <label htmlFor={`id_maquina-${index}`}>Máquina</label>
+                        <select
+                            id={`id_maquina-${index}`}
+                            value={String(vistoria.id_maquina)}
+                            onChange={(e) => {
+                              const maqId = e.target.value;
+                              const maquina = maquinasAgendamento.find(m => String(m.id) === maqId);
+                              handleVistoriaChange(index, 'id_maquina', parseInt(maqId));
+                              if (maquina) {
+                                handleVistoriaChange(index, 'marca_modelo', `${maquina.marca} ${maquina.modelo}`);
+                              }
+                            }}
+                            required
+                        >
+                            <option value="">Selecione uma máquina...</option>
+                            {maquinasAgendamento.map(maq => (
+                              <option key={maq.id} value={String(maq.id)}>
+                                #{maq.id} - {maq.marca} {maq.modelo}
+                              </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="form-group">
                         <label htmlFor={`marca_modelo-${index}`}>Marca/Modelo</label>

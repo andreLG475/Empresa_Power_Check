@@ -27,12 +27,12 @@ export default function Sidebar() {
       <img src="/src/assets/imagens/logo.png" alt="logo" className="logo" />
 
       <div className="user-info">
-        <p className="user-name">{user.nome}</p>
+        <p className="user-name">{localStorage.getItem('nome')}</p>
         <span className="user-type">{user.tipo}</span>
       </div>
 
       <div className="buttons-top">
-        <button className="btn-small">editar perfil</button>
+    
         <button className="btn-small" onClick={handleLeave}>Sair do perfil</button>
       </div>
 

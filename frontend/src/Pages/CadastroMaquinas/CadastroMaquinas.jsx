@@ -82,10 +82,28 @@ export default function CadastroMaquinas() {
                 <label htmlFor="idade_maquina">Idade da máquina</label>
                 <input type="text" id="idade_maquina" name="idade_maquina" required value={formData.idade_maquina} onChange={handleChange} />
               </div>
+
+
+
+
               <div className="form-group">
                 <label htmlFor="status">Status</label>
-                <input type="text" id="status" name="status" required value={formData.status} onChange={handleChange} />
+                <select type="text" id="status" name="status" required value={formData.status} onChange={handleChange} >
+                  <option value="" disabled>Selecione...</option>
+                  <option value="Funcionando">Funcionando </option>
+                  <option value="Em análise">Em análise</option>
+                  <option value="Com defeito">Com defeito</option>
+                  <option value="Inoperante">Inoperante</option>
+                </select>
               </div>
+
+
+
+
+
+
+
+
             </div>
           </div>
 

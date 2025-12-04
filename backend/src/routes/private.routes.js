@@ -59,10 +59,10 @@ router.put('/tecnico/atualizar', verifyToken, async (req, res) => {
 
 // Clientes
 router.post('/cliente/adicionar', verifyToken, async (req, res) => {
-    const {cnpj, id_tecnico_responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento} = req.body;
+    const {cnpj, responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento} = req.body;
     try {
-        const response = await db(`INSERT INTO clientes (cnpj, id_tecnico_responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, [cnpj, id_tecnico_responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento]);
+        const response = await db(`INSERT INTO clientes (cnpj, responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, [cnpj, responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento]);
         res.json({message: "Cliente adicionado com sucesso!"})
     } catch (err) {
         res.json(err);
@@ -104,7 +104,7 @@ router.get('/cliente/:id', verifyToken, async (req, res) => {
 
 router.put('/cliente/editar/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const { cnpj, id_tecnico_responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento } = req.body;
+    const { cnpj, responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento } = req.body;
     try {
         const checkClient = await db('SELECT id FROM clientes WHERE id = $1', [id]);
         if (checkClient.rows.length === 0) {
@@ -113,11 +113,11 @@ router.put('/cliente/editar/:id', verifyToken, async (req, res) => {
         
         await db(`
             UPDATE clientes 
-            SET cnpj = $1, id_tecnico_responsavel = $2, nome = $3, telefone = $4, 
+            SET cnpj = $1, responsavel = $2, nome = $3, telefone = $4, 
                 email = $5, cep = $6, estado = $7, cidade = $8, bairro = $9, 
                 rua = $10, numero_estabelecimento = $11, complemento = $12
             WHERE id = $13
-        `, [cnpj, id_tecnico_responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento, id]);
+        `, [cnpj, responsavel, nome, telefone, email, cep, estado, cidade, bairro, rua, numero_estabelecimento, complemento, id]);
         
         res.json({ message: "Cliente atualizado com sucesso!" });
     } catch (err) {
@@ -312,7 +312,7 @@ router.get('/agendamento/:id', verifyToken, async (req, res) => {
 
 router.put('/agendamento/editar/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const { data, hora, id_cliente, id_tecnico } = req.body;
+    const { data, hora, id_cliente, id_tecnico, maquinas } = req.body;
     try {
         // Verificar se o agendamento existe
         const checkAgendamento = await db('SELECT id FROM agendamentos WHERE id = $1', [id]);
@@ -320,11 +320,26 @@ router.put('/agendamento/editar/:id', verifyToken, async (req, res) => {
             return res.status(404).json({ message: "Agendamento não encontrado!" });
         }
         
+        // Atualizar dados básicos do agendamento
         await db(`
             UPDATE agendamentos 
             SET data = $1, hora = $2, id_cliente = $3, id_tecnico = $4
             WHERE id = $5
         `, [data, hora, id_cliente, id_tecnico, id]);
+        
+        // Se máquinas foram fornecidas, atualizar a relação
+        if (maquinas && Array.isArray(maquinas) && maquinas.length > 0) {
+            // Remover todas as máquinas antigas do agendamento
+            await db('DELETE FROM agendamento_maquina WHERE id_agendamento = $1', [id]);
+            
+            // Adicionar as novas máquinas
+            for (const idMaquina of maquinas) {
+                await db(
+                    'INSERT INTO agendamento_maquina (id_agendamento, id_maquina) VALUES ($1, $2)',
+                    [id, idMaquina]
+                );
+            }
+        }
         
         res.json({ message: "Agendamento atualizado com sucesso!" });
     } catch (err) {
@@ -369,35 +384,31 @@ router.post('/relatorio/adicionar', verifyToken, async (req, res) => {
         }
 
         const { data, hora } = agendamentoResponse.rows[0];
-        const relatorios_criados = [];
 
-        // Criar um relatorio_agendamento para cada máquina/vistoria
+        // Criar um único relatorio_agendamento
+        const relatorioResult = await db(
+            `INSERT INTO relatorio_agendamento (id_agendamento, data, hora)
+            VALUES ($1, $2, $3) RETURNING id`,
+            [id_agendamento, data, hora]
+        );
+
+        const id_relatorio = relatorioResult.rows[0].id;
+
+        // Criar relatorio_detalhes para cada máquina/vistoria
         for (const vistoria of vistorias) {
             const { id_maquina, vistoria: vistoria_texto, problemas_encontrados, o_que_foi_feito } = vistoria;
 
-            // Criar relatorio_agendamento
-            const relatorioResult = await db(
-                `INSERT INTO relatorio_agendamento (id_agendamento, data, hora, id_maquina)
-                VALUES ($1, $2, $3, $4) RETURNING id`,
-                [id_agendamento, data, hora, id_maquina]
-            );
-
-            const id_relatorio = relatorioResult.rows[0].id;
-
-            // Criar relatorio_detalhes
             await db(
-                `INSERT INTO relatorio_detalhes (id_relatorio, vistoria, problemas_encontrados, o_que_foi_feito)
-                VALUES ($1, $2, $3, $4)`,
-                [id_relatorio, vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '']
+                `INSERT INTO relatorio_detalhes (id_relatorio, id_maquina, vistoria, problemas_encontrados, o_que_foi_feito)
+                VALUES ($1, $2, $3, $4, $5)`,
+                [id_relatorio, id_maquina, vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '']
             );
-
-            relatorios_criados.push(id_relatorio);
         }
 
         res.status(201).json({ 
             message: "Relatórios criados com sucesso!", 
-            relatorios_ids: relatorios_criados,
-            quantidade: relatorios_criados.length
+            relatorio_id: id_relatorio,
+            quantidade: vistorias.length
         });
     } catch (err) {
         res.status(500).json({ message: "Ocorreu um erro ao criar os relatórios!", err: err.message });
@@ -407,8 +418,23 @@ router.post('/relatorio/adicionar', verifyToken, async (req, res) => {
 router.get('/relatorio', verifyToken, async (req, res) => {
     try {
         const response = await db(`
-            SELECT * FROM v_relatorio_completo
-            ORDER BY data_relatorio DESC, hora_relatorio DESC
+            SELECT 
+                r.id AS relatorio_id,
+                r.data AS data_relatorio,
+                r.hora AS hora_relatorio,
+                a.id AS agendamento_id,
+                a.data AS data_agendamento,
+                a.hora AS hora_agendamento,
+                c.id AS cliente_id,
+                c.nome AS cliente_nome,
+                c.cnpj AS cliente_cnpj,
+                t.id AS tecnico_id,
+                t.nome_completo AS tecnico_nome
+            FROM relatorio_agendamento r
+            JOIN agendamentos a ON r.id_agendamento = a.id
+            JOIN clientes c ON a.id_cliente = c.id
+            JOIN tecnicos t ON a.id_tecnico = t.id
+            ORDER BY r.data DESC, r.hora DESC
         `);
         res.json(response.rows);
     } catch (err) {
@@ -446,8 +472,8 @@ router.get('/relatorio/:id', verifyToken, async (req, res) => {
             JOIN agendamentos a ON r.id_agendamento = a.id
             JOIN clientes c ON a.id_cliente = c.id
             JOIN tecnicos t ON a.id_tecnico = t.id
-            JOIN maquinas m ON r.id_maquina = m.id
-            LEFT JOIN relatorio_detalhes d ON r.id = d.id_relatorio
+            JOIN relatorio_detalhes d ON r.id = d.id_relatorio
+            JOIN maquinas m ON d.id_maquina = m.id
             WHERE r.id = $1
             GROUP BY r.id, a.id, c.id, t.id
         `, [id]);
@@ -494,61 +520,65 @@ router.get('/relatorio/:id', verifyToken, async (req, res) => {
 
 router.put('/relatorio/editar/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const { vistorias } = req.body;
+    const { id_agendamento, vistorias } = req.body;
     
     try {
-        // Buscar o agendamento base (usamos o id recebido para localizar o id_agendamento
-        // e reutilizar data/hora caso seja necessário criar novos registros)
+        // Buscar o relatório atual
         const baseRel = await db('SELECT id_agendamento, data, hora FROM relatorio_agendamento WHERE id = $1', [id]);
         if (baseRel.rows.length === 0) {
             return res.status(404).json({ message: "Relatório não encontrado!" });
         }
 
-        const id_agendamento = baseRel.rows[0].id_agendamento;
-        const relData = baseRel.rows[0].data;
-        const relHora = baseRel.rows[0].hora;
+        let finalAgendamentoId = id_agendamento || baseRel.rows[0].id_agendamento;
+        let relData = baseRel.rows[0].data;
+        let relHora = baseRel.rows[0].hora;
+
+        // Se o agendamento foi alterado, buscar nova data e hora
+        if (id_agendamento && id_agendamento !== baseRel.rows[0].id_agendamento) {
+            const novoAgendamento = await db(
+                'SELECT data, hora FROM agendamentos WHERE id = $1',
+                [id_agendamento]
+            );
+            if (novoAgendamento.rows.length === 0) {
+                return res.status(404).json({ message: "Agendamento não encontrado!" });
+            }
+            relData = novoAgendamento.rows[0].data;
+            relHora = novoAgendamento.rows[0].hora;
+
+            // Atualizar o relatório_agendamento com o novo agendamento
+            await db(
+                'UPDATE relatorio_agendamento SET id_agendamento = $1, data = $2, hora = $3 WHERE id = $4',
+                [id_agendamento, relData, relHora, id]
+            );
+        }
 
         if (!vistorias || !Array.isArray(vistorias) || vistorias.length === 0) {
             return res.status(400).json({ message: "Por favor, preencha a vistoria de pelo menos uma máquina!" });
         }
 
-        // Para cada vistoria, localizar (ou criar) o relatorio_agendamento correspondente
-        // usando id_agendamento + id_maquina. Em seguida atualizar ou inserir o detalhe.
+        // Para cada vistoria, atualizar ou criar relatorio_detalhes
         for (const vistoria of vistorias) {
             const { id_maquina, vistoria: vistoria_texto, problemas_encontrados, o_que_foi_feito } = vistoria;
 
-            // Procurar relatorio_agendamento para este agendamento + máquina
-            let rRes = await db(`
-                SELECT id FROM relatorio_agendamento
-                WHERE id_agendamento = $1 AND id_maquina = $2
-            `, [id_agendamento, id_maquina]);
+            // Procurar relatorio_detalhes para este relatorio + máquina
+            let dRes = await db(`
+                SELECT id FROM relatorio_detalhes
+                WHERE id_relatorio = $1 AND id_maquina = $2
+            `, [id, id_maquina]);
 
-            let relatorioId;
-            if (rRes.rows.length > 0) {
-                relatorioId = rRes.rows[0].id;
-            } else {
-                // Se não existir um relatorio_agendamento para essa máquina, criar um novo
-                const insertRel = await db(`
-                    INSERT INTO relatorio_agendamento (id_agendamento, data, hora, id_maquina)
-                    VALUES ($1, $2, $3, $4) RETURNING id
-                `, [id_agendamento, relData, relHora, id_maquina]);
-                relatorioId = insertRel.rows[0].id;
-            }
-
-            // Verificar se já existe detalhe para esse relatorio_agendamento
-            const detalheResponse = await db('SELECT id FROM relatorio_detalhes WHERE id_relatorio = $1', [relatorioId]);
-
-            if (detalheResponse.rows.length > 0) {
+            if (dRes.rows.length > 0) {
+                // Atualizar detalhe existente
                 await db(`
                     UPDATE relatorio_detalhes
                     SET vistoria = $1, problemas_encontrados = $2, o_que_foi_feito = $3
                     WHERE id = $4
-                `, [vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '', detalheResponse.rows[0].id]);
+                `, [vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '', dRes.rows[0].id]);
             } else {
+                // Criar novo detalhe para esta máquina
                 await db(`
-                    INSERT INTO relatorio_detalhes (id_relatorio, vistoria, problemas_encontrados, o_que_foi_feito)
-                    VALUES ($1, $2, $3, $4)
-                `, [relatorioId, vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '']);
+                    INSERT INTO relatorio_detalhes (id_relatorio, id_maquina, vistoria, problemas_encontrados, o_que_foi_feito)
+                    VALUES ($1, $2, $3, $4, $5)
+                `, [id, id_maquina, vistoria_texto || '', problemas_encontrados || '', o_que_foi_feito || '']);
             }
         }
 

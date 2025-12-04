@@ -13,11 +13,11 @@ import CadastroAgendamento from "./Pages/CadastroAgendamento/CadastroAgendamento
 import CadastroRelatorios from "./Pages/CadastroRelatorios/CadastroRelatorios";
 import Inicial from "./Pages/Inicial/Inicial";
 import PaginaPrivada from "./componentes/PaginaPrivada.jsx";
-import EditarTecnico from "./Pages/EditarTecnico/EditarTecnico";
-import EditarCliente from "./Pages/EditarCliente/EditarCliente";
-import EditarMaquina from "./Pages/EditarMaquina/EditarMaquina";
-import EditarAgendamento from "./Pages/EditarAgendamento/EditarAgendamento";
-import EditarRelatorio from "./Pages/EditarRelatorio/EditarRelatorio";
+import EditarTecnico from "./Pages/EditarTecnico/EditarTecnico.jsx";
+import EditarCliente from "./Pages/EditarCliente/EditarCliente.jsx";
+import EditarMaquina from "./Pages/EditarMaquina/EditarMaquina.jsx";
+import EditarAgendamento from "./Pages/EditarAgendamento/EditarAgendamento.jsx";
+import EditarRelatorio from "./Pages/EditarRelatorio/EditarRelatorio.jsx";
 
 
 

@@ -17,13 +17,9 @@ SELECT
     c.id AS cliente_id,
     c.nome AS cliente_nome,
     c.cnpj AS cliente_cnpj,
+    c.responsavel,
     t.id AS tecnico_id,
     t.nome_completo AS tecnico_nome,
-    m.id AS maquina_id,
-    m.marca AS maquina_marca,
-    m.modelo AS maquina_modelo,
-    m.status AS maquina_status,
-    m.potencia AS maquina_potencia,
     d.id AS detalhe_id,
     d.vistoria,
     d.problemas_encontrados,
@@ -32,7 +28,6 @@ FROM relatorio_agendamento r
 JOIN agendamentos a ON r.id_agendamento = a.id
 JOIN clientes c ON a.id_cliente = c.id
 JOIN tecnicos t ON a.id_tecnico = t.id
-JOIN maquinas m ON r.id_maquina = m.id
 LEFT JOIN relatorio_detalhes d ON r.id = d.id_relatorio;
 
 -- Informações de relatórios

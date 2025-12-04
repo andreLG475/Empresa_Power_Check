@@ -122,7 +122,7 @@ export default function CadastroTecnico() {
             <div className="form-row" style={{ gridTemplateColumns: '1fr 2fr' }}>
               <div className="form-group">
                 <label htmlFor="telefone">Telefone</label>
-                <input type="tel" id="telefone" name="telefone" required maxLength={14} value={formData.telefone} onChange={handleChange} placeholder="(xx) xxxxx-xxxx" />
+                <input type="tel" id="telefone" name="telefone" required maxLength={15} value={formData.telefone} onChange={handleChange} placeholder="(xx) xxxxx-xxxx" />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -141,7 +141,36 @@ export default function CadastroTecnico() {
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>
-                <input type="text" id="estado" name="estado" required value={formData.estado} onChange={handleChange} />
+                <select id="estado" name="estado" required value={formData.estado} onChange={handleChange} >
+                  <option value="" disabled>Selecione...</option>
+                  <option value="Acre">AC</option>
+                  <option value="Alagoas">AL</option>
+                  <option value="Amapá">	AP</option>
+                  <option value="Amazonas">	AM</option>
+                  <option value="Bahia">BA</option>
+                  <option value="Ceará">CE</option>
+                  <option value="Distrito Federal">DF</option>
+                  <option value="Espírito Santo">ES</option>
+                  <option value="Goiás">GO</option>
+                  <option value="Maranhão">MA</option>
+                  <option value="Mato Grosso">MT</option>
+                  <option value="Mato Grosso do Sul">MS</option>
+                  <option value="Minas Gerais">MG</option>
+                  <option value="Pará">PA</option>
+                  <option value="Paraíba">PB</option>
+                  <option value="Paraná">PR</option>
+                  <option value="Pernambuco">PE</option>
+                  <option value="Piauí">PI</option>
+                  <option value="Rio de Janeiro">RJ</option>
+                  <option value="Rio Grande do Norte">RN</option>
+                  <option value="Rio Grande do Sul">RS</option>
+                  <option value="Rondônia">RO</option>
+                  <option value="Roraima">RR</option>
+                  <option value="Santa Catarina">SC</option>
+                  <option value="São Paulo">SP</option>
+                  <option value="Sergipe">SE</option>
+                  <option value="Tocantins">TO</option>
+                </select>
               </div>
               <div className="form-group">
                 <label htmlFor="cidade">Cidade</label>

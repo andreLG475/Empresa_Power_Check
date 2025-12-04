@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Footer from "../../componentes/footer/Footer"; 
 import './Login.css'; 
 import api from '../../api/api';
-import { Navigate } from 'react-router-dom';
+import Sidebar from '../../componentes/sidebar/Sidebar';
 
 export default function Login() {
 
@@ -15,8 +15,11 @@ export default function Login() {
     let response;
     try {
       response = await api.post('/auth/tecnico/login', {nome, senha});
-      const token = response.data.token;
+      console.log(response.data);
+      const {token, nome_completo} = response.data;
+      
       localStorage.setItem('token', token);
+      localStorage.setItem('nome', nome_completo);
       window.location.href='/clientes';
     } catch (err) {
 
@@ -25,7 +28,9 @@ export default function Login() {
   };
 
   return (
+    
     <div className="login-container">
+      <Sidebar></Sidebar>
       <div className="login-content">
         <img src="/src/assets/imagens/logo.png" alt="logo" className="logo" />
         <p className="login-prompt">Faça login para continuar</p>

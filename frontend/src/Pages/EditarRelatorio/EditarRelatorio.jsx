@@ -167,13 +167,16 @@ export default function EditarRelatorio() {
       return;
     }
 
-    const payload = { vistorias: vistoriasValidas.map(v => ({
-      // backend espera id_maquina como número
-      id_maquina: parseInt(v.id_maquina, 10),
-      vistoria: v.vistoria,
-      problemas_encontrados: v.problemas_encontrados,
-      o_que_foi_feito: v.o_que_foi_feito
-    })) };
+    const payload = { 
+      id_agendamento: parseInt(formData.id_agendamento, 10),
+      vistorias: vistoriasValidas.map(v => ({
+        // backend espera id_maquina como número
+        id_maquina: parseInt(v.id_maquina, 10),
+        vistoria: v.vistoria,
+        problemas_encontrados: v.problemas_encontrados,
+        o_que_foi_feito: v.o_que_foi_feito
+      })) 
+    };
 
     try {
       await api.put(`/relatorio/editar/${formData.id}`, payload);
@@ -187,6 +190,16 @@ export default function EditarRelatorio() {
 
   if (loading) {
     return <div className="relatorio-container"><div className="relatorio-content">Carregando...</div></div>;
+  }
+
+  function dataHora(data) {
+    // 1223-12-12T03:06:28.000Z
+    let dataNova = data;
+    const [year, month, day] = dataNova.split('T')[0].split('-');
+    const [hour, minute, second] = dataNova.split('T')[1].split(':')
+    dataNova = `${day}/${month}/${year} - ${hour}:${minute}:${second.split('.')[0]}`;
+    console.log(dataNova)
+    return dataNova;
   }
 
   return (
@@ -206,7 +219,7 @@ export default function EditarRelatorio() {
                 <select id="id_agendamento" name="id_agendamento" required value={formData.id_agendamento} onChange={handleFormChange}>
                   <option value="" disabled>Selecione um agendamento...</option>
                   {agendamentos.map(a => (
-                    <option key={a.id} value={String(a.id)}>#{a.id} - {a.cliente_nome} ({a.data})</option>
+                    <option key={a.id} value={String(a.id)}>#{a.id} - {a.cliente_nome} ({dataHora(a.data)})</option>
                   ))}
                 </select>
               </div>

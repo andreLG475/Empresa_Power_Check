@@ -18,7 +18,7 @@ export default function CadastroCliente() {
     cidade: '',
     bairro: '',
     rua: '',
-    numero: '',
+    numero_estabelecimento: '',
     complemento: ''
   });
 
@@ -117,7 +117,36 @@ export default function CadastroCliente() {
               </div>
               <div className="form-group">
                 <label htmlFor="estado">Estado</label>
-                <input type="text" id="estado" name="estado" required value={formData.estado} onChange={handleChange} />
+                <select id="estado" name="estado" required value={formData.estado} onChange={handleChange} >
+                  <option value="" disabled>Selecione...</option>
+                  <option value="Acre">AC</option>
+                  <option value="Alagoas">AL</option>
+                  <option value="Amapá">	AP</option>
+                  <option value="Amazonas">	AM</option>
+                  <option value="Bahia">BA</option>
+                  <option value="Ceará">CE</option>
+                  <option value="Distrito Federal">DF</option>
+                  <option value="Espírito Santo">ES</option>
+                  <option value="Goiás">GO</option>
+                  <option value="Maranhão">MA</option>
+                  <option value="Mato Grosso">MT</option>
+                  <option value="Mato Grosso do Sul">MS</option>
+                  <option value="Minas Gerais">MG</option>
+                  <option value="Pará">PA</option>
+                  <option value="Paraíba">PB</option>
+                  <option value="Paraná">PR</option>
+                  <option value="Pernambuco">PE</option>
+                  <option value="Piauí">PI</option>
+                  <option value="Rio de Janeiro">RJ</option>
+                  <option value="Rio Grande do Norte">RN</option>
+                  <option value="Rio Grande do Sul">RS</option>
+                  <option value="Rondônia">RO</option>
+                  <option value="Roraima">RR</option>
+                  <option value="Santa Catarina">SC</option>
+                  <option value="São Paulo">SP</option>
+                  <option value="Sergipe">SE</option>
+                  <option value="Tocantins">TO</option>
+                </select>
               </div>
               <div className="form-group">
                 <label htmlFor="cidade">Cidade</label>
@@ -134,8 +163,8 @@ export default function CadastroCliente() {
                 <input type="text" id="rua" name="rua" required value={formData.rua} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label htmlFor="numero">Número do estabelecimento</label>
-                <input type="text" id="numero" name="numero" required value={formData.numero} onChange={handleChange} />
+                <label htmlFor="numero_estabelecimento">Número do estabelecimento</label>
+                <input type="text" id="numero_estabelecimento" name="numero_estabelecimento" required value={formData.numero_estabelecimento} onChange={handleChange} />
               </div>
             </div>
             <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
